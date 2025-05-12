@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ – Table Tap</title>
+  <link rel="stylesheet" href="{% static 'output.css' %}"/>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="w-full flex items-center justify-between px-6 py-4 bg-white shadow">
+    <div class="text-2xl font-bold">Table Tap</div>
+    <div class="space-x-6">
+      <a href="{% url 'account:login' %}" class="text-gray-600 hover:text-gray-900">Login</a>
+      <a href="{% url 'account:help' %}"   class="text-gray-600 hover:text-gray-900">Help</a>
+    </div>
+  </nav>
+
+  <!-- image background -->
+  <div
+    class="relative w-full h-32 bg-cover bg-center text-white flex items-center px-6"
+    style="background-image: url('{% static 'ungu.png' %}');"
+  >
+    <h2 class="text-2xl font-semibold">Frequently Asked Questions</h2>
+  </div>
+
+  <!-- Main FAQ Content -->
+  <main class="flex-1 p-6 bg-gray-100">
+    <div class="max-w-3xl mx-auto bg-white rounded shadow p-6 space-y-6">
+      <h1 class="text-2xl font-bold">Frequently Asked Questions</h1>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">1. How do I create an account?</h2>
+        <p class="text-gray-700">
+          Simply click on the “Sign Up” button on the login page. Fill out the required information,
+          and you’ll be able to access the Table Tap dashboard immediately.
+        </p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">2. Can I manage multiple restaurants under one account?</h2>
+        <p class="text-gray-700">
+          Yes. Once logged in, you can add multiple branches or restaurant profiles, each with its own menu and QR codes.
+        </p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">3. How do I generate QR codes for tables?</h2>
+        <p class="text-gray-700">
+          After adding a new branch or table, go to the “Manage Tables” section and click “Generate QR.”
+          The system will provide a QR code for each table.
+        </p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">4. Where can I find more help?</h2>
+        <p class="text-gray-700">
+          If you still have questions, please visit our
+          <a href="{% url 'account:help' %}" class="text-blue-600 hover:underline">Help page</a>
+          or contact our support at
+          <a href="mailto:support@tabletap.com" class="text-blue-600 hover:underline">
+            support@tabletap.com
+          </a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-700 text-white py-4 text-center text-sm">
+    TableTap &copy; {% now "Y" %}. All rights reserved.
+  </footer>
+
+</body>
+</html>

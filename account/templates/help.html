@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Help – Table Tap</title>
+  <link rel="stylesheet" href="{% static 'output.css' %}"/>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="w-full flex items-center justify-between px-6 py-4 bg-white shadow">
+    <div class="text-2xl font-bold">Table Tap</div>
+    <div class="space-x-6">
+      <a href="{% url 'account:login' %}" class="text-gray-600 hover:text-gray-900">Login</a>
+      <a href="{% url 'account:faq' %}"  class="text-gray-600 hover:text-gray-900">FAQ</a>
+    </div>
+  </nav>
+
+  <!-- image background -->
+  <div
+    class="relative w-full h-32 bg-cover bg-center text-white flex items-center px-6"
+    style="background-image: url('{% static 'ungu.png' %}');"
+  >
+    <h2 class="text-2xl font-semibold">Help Center</h2>
+  </div>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 bg-gray-100">
+    <div class="max-w-3xl mx-auto bg-white rounded shadow p-6 space-y-6">
+      <h1 class="text-2xl font-bold">Help Center</h1>
+      <p class="text-gray-700">
+        Welcome to Table Tap’s Help Center. Here you’ll find useful information and troubleshooting steps for common issues.
+      </p>
+
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">Getting Started</h2>
+        <p class="text-gray-700">
+          Learn how to create an account, set up your restaurant profile, and navigate the dashboard.
+        </p>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">Common Issues</h2>
+        <ul class="list-disc list-inside text-gray-700 space-y-1">
+          <li>How to generate QR codes for each table</li>
+          <!-- tambahkan poin lain di sini bila perlu -->
+        </ul>
+      </section>
+
+      <section class="space-y-2">
+        <h2 class="text-xl font-semibold">Contact Support</h2>
+        <p class="text-gray-700">
+          If you cannot find the solution here, please reach out to our support team via email at
+          <a href="mailto:support@tabletap.com" class="text-blue-600 hover:underline">
+            support@tabletap.com
+          </a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-700 text-white py-4 text-center text-sm">
+    TableTap &copy; {% now "Y" %}. All rights reserved.
+  </footer>
+
+</body>
+</html>

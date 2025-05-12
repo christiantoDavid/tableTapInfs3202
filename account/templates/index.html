@@ -1,0 +1,231 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TableTap - Landing</title>
+
+  <!-- Tailwind -->
+  <link rel="stylesheet" href="{% static 'output.css' %}" />
+
+  <!-- Custom animations and gradient backgrounds -->
+  <style>
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .gradient-bg-features {
+      background: linear-gradient(-45deg, #0f1f3d, #1a2b4d, #0f1f3d, #1a2b4d);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .gradient-bg-flow {
+      background: linear-gradient(-45deg, #ffffff, #f0f0f0, #ffffff, #f0f0f0);
+      background-size: 400% 400%;
+      animation: gradientFlow 20s ease infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fadeInUp {
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    .pulse-line {
+      animation: pulse 2s infinite;
+    }
+    @keyframes blobMorph {
+      0% {
+        clip-path: polygon(50% 0%, 80% 20%, 90% 50%, 80% 80%, 50% 100%, 20% 80%, 10% 50%, 20% 20%);
+      }
+      25% {
+        clip-path: polygon(40% 0%, 70% 20%, 90% 50%, 70% 80%, 40% 100%, 10% 80%, 0% 50%, 10% 20%);
+      }
+      50% {
+        clip-path: polygon(50% 10%, 80% 20%, 100% 50%, 80% 80%, 50% 90%, 20% 80%, 0% 50%, 20% 20%);
+      }
+      75% {
+        clip-path: polygon(60% 0%, 90% 20%, 100% 50%, 90% 80%, 60% 100%, 30% 80%, 20% 50%, 30% 20%);
+      }
+      100% {
+        clip-path: polygon(50% 0%, 80% 20%, 90% 50%, 80% 80%, 50% 100%, 20% 80%, 10% 50%, 20% 20%);
+      }
+    }
+    .blob {
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 120%;
+      z-index: 0;
+      animation: blobMorph 12s infinite ease-in-out;
+    }
+    .blob-features {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .blob-flow {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    .content-wrapper {
+      position: relative;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="w-full min-h-screen overflow-y-auto">
+
+  <!-- Main Page-->
+  <section class="relative min-h-screen w-full" id="hero">
+    <video
+      class="absolute top-0 left-0 w-full h-full object-cover"
+      src="{% static 'background.mp4' %}"
+      autoplay
+      muted
+      loop
+      playsinline
+    ></video>
+
+    <!-- Navbar -->
+    <header class="relative z-10 flex justify-between items-center px-8 py-4 h-16">
+      <div class="text-white font-bold text-xl">TableTap</div>
+      <nav class="space-x-4">
+        <a href="./login.html" class="text-white font-semibold hover:underline">Sign In</a>
+        <a href="./register.html" class="text-white font-semibold hover:underline">Sign Up</a>
+      </nav>
+    </header>
+    <main class="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Find Your Inspiration</h1>
+      <p class="text-white text-lg md:text-xl max-w-2xl mb-6">
+        Join the TableTap community and explore the seamless way to manage your restaurant, café, or bar with our digital menu and ordering solution.
+      </p>
+      <a href="#features" class="bg-[#4C8DFF] hover:bg-[#3a6cd7] text-white font-bold py-3 px-6 rounded-full transition">
+        Get Started
+      </a>
+    </main>
+  </section>
+
+  <!-- Main Feature page -->
+  <section class="relative min-h-screen w-full py-12 px-4 gradient-bg-features text-white" id="features">
+    <div class="blob blob-features"></div>
+    <div class="content-wrapper max-w-5xl mx-auto text-center mb-10">
+      <h2 class="text-3xl font-bold mb-2 fadeInUp" style="animation-delay: 0.1s;">Discover TableTap's Revolutionary Features</h2>
+      <p class="text-gray-200 fadeInUp" style="animation-delay: 0.2s;">
+        Experience a seamless, intuitive way to elevate your restaurant’s operations with our cutting-edge digital menu and ordering solution.
+      </p>
+    </div>
+    <div class="content-wrapper max-w-6xl mx-auto grid gap-8 md:grid-cols-3">
+      <!-- Feature Card 1 -->
+      <div class="bg-[#E0E0E0] rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 p-6 text-gray-800 flex flex-col items-center fadeInUp" style="animation-delay: 0.3s;">
+        <img src="{% static 'Qr.png' %}" alt="QR Code" class="w-24 h-24 object-contain mb-4" />
+        <h3 class="text-xl font-semibold mb-2 text-center">Instant QR Code Ordering</h3>
+        <p class="text-sm text-center">
+          Customers scan the dynamic QR code to effortlessly access the menu and place orders directly from their smartphones.
+        </p>
+      </div>
+      <!-- Feature Card 2 -->
+      <div class="bg-[#E0E0E0] rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 p-6 text-gray-800 flex flex-col items-center fadeInUp" style="animation-delay: 0.5s;">
+        <img src="{% static 'people.png' %}" alt="Order Management" class="w-24 h-24 object-contain mb-4" />
+        <h3 class="text-xl font-semibold mb-2 text-center">Streamlined Order Management</h3>
+        <p class="text-sm text-center">
+          Empower your staff with real-time updates and efficient order tracking to ensure impeccable service.
+        </p>
+      </div>
+      <!-- Feature Card 3 -->
+      <div class="bg-[#E0E0E0] rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 p-6 text-gray-800 flex flex-col items-center fadeInUp" style="animation-delay: 0.7s;">
+        <img src="{% static 'food.png' %}" alt="Food Gallery" class="w-24 h-24 object-contain mb-4" />
+        <h3 class="text-xl font-semibold mb-2 text-center">Vibrant Photo Menu</h3>
+        <p class="text-sm text-center">
+          Showcase your culinary masterpieces with a visually stunning gallery that tempts every palate.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flow section page -->
+  <section class="relative min-h-screen w-full py-12 px-4 gradient-bg-flow text-gray-800" id="flow">
+    <div class="blob blob-flow"></div>
+    <div class="content-wrapper max-w-5xl mx-auto text-center mb-10">
+      <h2 class="text-3xl font-bold mb-2 fadeInUp" style="animation-delay: 0.1s;">Effortless Workflow at a Glance</h2>
+      <p class="text-gray-600 fadeInUp" style="animation-delay: 0.2s;">
+        From registration to real-time order management, witness how TableTap transforms your dining experience.
+      </p>
+    </div>
+    <div class="content-wrapper max-w-5xl mx-auto relative overflow-x-auto">
+      <div class="absolute top-1/2 left-0 h-0.5 w-full bg-gray-300 pulse-line hidden md:block"></div>
+      <div class="relative z-10 flex flex-col md:flex-row justify-between items-center md:items-start md:min-w-[700px] px-4 py-8 space-y-8 md:space-y-0 md:space-x-4">
+        <!-- Step 1 -->
+        <div class="flex flex-col items-center text-center md:w-1/6 fadeInUp" style="animation-delay: 0.3s;">
+          <div class="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#4C8DFF] text-white shadow-lg transform hover:scale-110 transition-transform duration-300" style="bottom: -40px;">
+            <img src="{% static 'user.png' %}" alt="User Icon" class="w-6 h-6" />
+          </div>
+          <div class="mt-16">
+            <h3 class="font-semibold">Sign Up</h3>
+            <p class="text-sm mt-2">Create an account to unlock all features.</p>
+          </div>
+        </div>
+        <!-- Step 2 -->
+        <div class="flex flex-col items-center text-center md:w-1/6 fadeInUp" style="animation-delay: 0.4s;">
+          <div class="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#4C8DFF] text-white shadow-lg transform hover:scale-110 transition-transform	duration-300" style="bottom: -40px;">		
+            <img src="{% static 'key.png' %}" alt="Key Icon" class="w-6 h-6" />
+          </div>
+          <div class="mt-16">
+            <h3 class="font-semibold">Sign In</h3>
+            <p class="text-sm mt-2">Access your personalized dashboard instantly.</p>
+          </div>
+        </div>
+        <!-- Step 3 -->
+        <div class="flex flex-col items-center text-center md:w-1/6 fadeInUp" style="animation-delay: 0.5s;">
+          <div class="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#4C8DFF] text-white shadow-lg	transform hover:scale-110 transition-transform duration-300" style="bottom: -40px;">
+            <img src="{% static 'restaurant.png' %}" alt="Restaurant Icon" class="w-6 h-6" />
+          </div>
+          <div class="mt-16">
+            <h3 class="font-semibold">Add Your Restaurant</h3>
+            <p class="text-sm mt-2">Seamlessly manage and expand your dining empire.</p>
+          </div>
+        </div>
+        <!-- Step 4 -->
+        <div class="flex flex-col items-center text-center md:w-1/6 fadeInUp" style="animation-delay: 0.6s;">
+          <div class="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#4C8DFF] text-white shadow-lg transform	hower:scale-110 transition-transform duration-300" style="bottom: -40px;">
+            <img src="{% static 'menu.png' %}" alt="Menu Icon" class="w-6 h-6" />
+          </div>
+          <div class="mt-16">
+            <h3 class="font-semibold">Add Your Menu & QR</h3>
+            <p class="text-sm mt-2">Generate a unique QR code for effortless ordering.</p>
+          </div>
+        </div>
+        <!-- Step 5 -->
+        <div class="flex flex-col items-center text-center md:w-1/6 fadeInUp" style="animation-delay: 0.7s;">
+          <div class="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#4C8DFF] text-white shadow-lg transform hover:scale-110 transition-transform duration-300" style="bottom: -40px;">
+            <img src="{% static 'monitor.png' %}" alt="Monitor Icon" class="w-6 h-6" />
+          </div>
+          <div class="mt-16">
+            <h3 class="font-semibold">Monitoring Order</h3>
+            <p class="text-sm mt-2">Track orders in real-time with our intuitive interface.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-4 text-center text-sm text-gray-600 bg-[#F5F5F5]">
+    <p>TableTap &copy; 2025. David Christianto.</p>
+  </footer>
+</body>
+</html>

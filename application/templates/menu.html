@@ -1,0 +1,253 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ restaurant_name }} Menu</title>
+  <link rel="stylesheet" href="{% static 'output.css' %}" />
+
+  <style>
+    /* Horizontal scrollable categories row */
+    .categories-row {
+      display: inline-flex;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 0.5rem;
+    }
+    .categories-row::-webkit-scrollbar {
+      height: 6px;
+    }
+    .categories-row::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 3px;
+    }
+    .cat-btn {
+      padding: 0.5rem 1rem;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .cat-btn:hover {
+      background-color: #f3f3f3;
+    }
+    .cat-btn.selected {
+      background-color: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    /* Style for item cards */
+    .menu-item-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 1rem;
+    }
+    .menu-item-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+
+<body class="bg-white text-gray-800 flex flex-col min-h-screen">
+  <!-- HEADER -->
+  <header class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+    <!-- Left side: Restaurant + Table info -->
+    <div>
+      <h1 class="text-3xl font-bold">{{ restaurant_name }} Menu</h1>
+      <p class="text-sm text-gray-500">By Table Tap</p>
+      <p class="text-sm text-gray-500">Table {{ table_number }}</p>
+    </div>
+
+    <!-- Right side: Cart Link -->
+    <a 
+      href="{% url 'cart_page' %}" 
+      class="flex items-center space-x-1 text-gray-800 hover:text-gray-900"
+    >
+      <!-- Cart Count from session cart -->
+      <span id="cartCount" class="text-xl font-bold">
+        {{ cart_count|default:0 }}
+      </span>
+      <!-- Cart Icon -->
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        class="h-6 w-6 text-gray-600" 
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor"
+      >
+        <path 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M3 3h2l.4 2M7 13h10l4-8H5.4
+             M7 13l-1.35 5.39A2 2 0 007.6 21h10.8
+             a2 2 0 001.95-1.61L21 13H7z"
+        />
+      </svg>
+      <span class="font-medium">Cart</span>
+    </a>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 max-w-6xl mx-auto p-6 w-full">
+    <!-- Category Row -->
+    <section class="mb-6">
+      <h2 class="text-lg font-bold mb-2">Menu Categories:</h2>
+      <div class="overflow-x-auto">
+        <div class="categories-row">
+          <!-- "All" category -->
+          <button 
+            class="cat-btn {% if not selected_category %}selected{% endif %}"
+            onclick="goCategory('')"
+          >
+            All
+          </button>
+          {% for cat in categories %}
+            <button 
+              class="cat-btn {% if selected_category and selected_category.cat_id == cat.cat_id %}selected{% endif %}"
+              onclick="goCategory('{{ cat.cat_id }}')"
+            >
+              {{ cat.name }}
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Grid -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {% for item in menu_items %}
+        <div class="menu-item-card">
+          {% if item.photo %}
+            <img src="{{ item.photo.url }}" alt="{{ item.name }}"/>
+          {% else %}
+            <img src="{% static 'Food 1.png' %}" alt="{{ item.name }}"/>
+          {% endif %}
+
+          <p class="text-red-600 text-xl font-bold">${{ item.price }}</p>
+          <h3 class="text-lg font-semibold mb-1">{{ item.name }}</h3>
+          <p class="text-sm text-gray-600 mb-2">
+            {{ item.description|default:"No description provided." }}
+          </p>
+
+          <!-- Quantity row (localStorage) -->
+          <div class="flex items-center justify-center space-x-3 mb-3">
+            <button 
+              class="px-3 py-1 bg-gray-200 rounded"
+              onclick="decrementItem('{{ item.menu_id }}')"
+            >
+              -
+            </button>
+            <span 
+              id="qty-{{ item.menu_id }}"
+              class="font-semibold"
+            >
+              0
+            </span>
+            <button 
+              class="px-3 py-1 bg-gray-200 rounded"
+              onclick="incrementItem('{{ item.menu_id }}')"
+            >
+              +
+            </button>
+          </div>
+
+          <!-- "Add to Cart" => add specific item with ?qty=... and reset only this card to 0 -->
+          <button
+            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+            onclick="addToCart('{{ item.menu_id }}')"
+          >
+            + Add to Cart
+          </button>
+        </div>
+      {% empty %}
+        <p class="col-span-full text-center text-gray-500">No menu items found.</p>
+      {% endfor %}
+    </section>
+  </main>
+
+  <footer class="bg-gray-100 border-t border-gray-200 py-4 text-center text-sm text-gray-600 mt-auto">
+    <p>© 2025 Table Tap. All rights reserved.</p>
+  </footer>
+
+  <script>
+    /**
+     * 1) Category filter => reload with ?cat_id=...
+     */
+    function goCategory(catId) {
+      let url = '?';
+      if (catId) {
+        url += 'cat_id=' + catId;
+      }
+      window.location.href = url;
+    }
+
+    /**
+     * 2) We'll store each card's quantity in localStorage so it won't reset on page reload.
+     *    Key: "qty-<menu_id>" => integer quantity
+     */
+
+    // On page load, read localStorage for each item and set the displayed quantity
+    document.addEventListener('DOMContentLoaded', function() {
+      const allQtySpans = document.querySelectorAll('[id^="qty-"]');
+      allQtySpans.forEach(span => {
+        const menuId = span.id.replace('qty-', '');
+        const storedVal = localStorage.getItem('qty-' + menuId);
+        // If there's a stored value, use it; otherwise 0
+        span.textContent = storedVal ? storedVal : '0';
+      });
+    });
+
+    // incrementItem => localStorage
+    function incrementItem(menuId) {
+      const key = 'qty-' + menuId;
+      let current = parseInt(localStorage.getItem(key) || '0', 10);
+      current++;
+      localStorage.setItem(key, current);
+      document.getElementById('qty-' + menuId).textContent = current;
+    }
+
+    // decrementItem => localStorage
+    function decrementItem(menuId) {
+      const key = 'qty-' + menuId;
+      let current = parseInt(localStorage.getItem(key) || '0', 10);
+      if (current > 0) {
+        current--;
+      }
+      localStorage.setItem(key, current);
+      document.getElementById('qty-' + menuId).textContent = current;
+    }
+
+    /**
+     * 3) addToCart(menuId): read the quantity from localStorage, call ?qty=...
+     *    Then reset only THIS card's localStorage to 0, so it won't keep the old quantity.
+     *    Other cards remain untouched.
+     */
+    function addToCart(menuId) {
+      const key = 'qty-' + menuId;
+      let qty = parseInt(localStorage.getItem(key) || '0', 10);
+      if (qty <= 0) {
+        alert('Please select a quantity > 0');
+        return;
+      }
+      // Step A: set this card's quantity to 0 in localStorage (independent from other cards)
+      localStorage.setItem(key, 0);
+
+      // Step B: redirect to /menu/add/<menu_id>/?qty=...
+      window.location.href = "{% url 'add_to_cart' 0 %}".replace('0', menuId) + "?qty=" + qty;
+    }
+  </script>
+</body>
+</html>

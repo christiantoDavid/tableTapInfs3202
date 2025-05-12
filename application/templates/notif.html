@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Notifications - TableTap
+{% endblock title %}
+
+{% block content %}
+
+  <!-- Show messages popups if any -->
+  {% if messages %}
+    {% for msg in messages %}
+      <script>alert("{{ msg }}");</script>
+    {% endfor %}
+  {% endif %}
+
+<!-- Top Bar -->
+<div class="flex items-center justify-between px-6 py-4.5 bg-white shadow mb-1">
+  <!-- Hamburger icon for mobile -->
+  <button class="md:hidden p-2 text-gray-600 hover:text-gray-900" onclick="toggleSidebar()">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+  <h1 class="text-xl font-bold md:ml-4">Invitation Notif</h1>
+  <p class="text-gray-600 hidden md:block">Hello, {{ username }}</p>
+</div>
+
+<!-- Banner video -->
+<div class="relative w-full h-40 overflow-hidden">
+  <video
+    class="absolute top-0 left-0 w-full h-full object-cover"
+    src="{% static 'mes.mp4' %}"
+    autoplay
+    muted
+    loop
+    playsinline
+  ></video>
+  <div class="relative z-10 flex items-center justify-center h-full text-center text-white">
+    <h2 class="text-3xl font-semibold">List Of Your Invitation From Others</h2>
+  </div>
+</div>
+
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Your Invitations</h1>
+
+  {% if invitations %}
+    <ul class="space-y-2">
+      {% for inv in invitations %}
+        <li class="bg-white shadow p-4 rounded flex items-center justify-between">
+          <div>
+            <p class="text-lg font-semibold">Restaurant: {{ inv.restaurant.name }}</p>
+            <p class="text-sm text-gray-600">Status: {{ inv.status }}</p>
+          </div>
+          <div class="space-x-2">
+            <form method="POST" class="inline">
+              {% csrf_token %}
+              <input type="hidden" name="invitation_id" value="{{ inv.invitation_id }}">
+              <input type="hidden" name="action" value="accept">
+              <button type="submit" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">
+                Accept
+              </button>
+            </form>
+            <form method="POST" class="inline">
+              {% csrf_token %}
+              <input type="hidden" name="invitation_id" value="{{ inv.invitation_id }}">
+              <input type="hidden" name="action" value="decline">
+              <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm">
+                Decline
+              </button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-600">You have no pending invitations.</p>
+  {% endif %}
+</div>
+{% endblock content %}

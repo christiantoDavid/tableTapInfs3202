@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Dashboard - TableTap
+{% endblock title %}
+
+{% block content %}
+<style>
+  .filter-scroll-container {
+    display: inline-flex;
+    white-space: nowrap;
+    gap: 0.5rem;
+  }
+  .filter-scroll-container::-webkit-scrollbar {
+    height: 6px;
+  }
+  .filter-scroll-container::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+  }
+</style>
+
+  <!-- Show messages popups if any -->
+  {% if messages %}
+    {% for msg in messages %}
+      <script>alert("{{ msg }}");</script>
+    {% endfor %}
+  {% endif %}
+
+<!-- Top Bar -->
+<div class="flex items-center justify-between px-6 py-4.5 bg-white shadow mb-1">
+  <!-- Hamburger for mobile -->
+  <button class="md:hidden p-2 text-gray-600 hover:text-gray-900" onclick="toggleSidebar()">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+  <h1 class="text-xl font-bold md:ml-4">Dashboard</h1>
+  <p class="text-gray-600 hidden md:block">Hello, {{ username }}</p>
+</div>
+
+<!-- image backgroud -->
+<div class="relative w-full h-30 bg-cover bg-center text-white flex items-center px-6"
+     style="background-image: url('{% static 'ungu.png' %}');">
+  <h2 class="mx-auto text-4xl font-semibold">Welcome To Table Tap Application</h2>
+</div>
+
+<!-- Filter Row -->
+<div class="px-5 overflow-x-auto w-full">
+  <form method="get" id="filterForm" class="filter-scroll-container items-center">
+    <!-- Filter 1: order_filter -->
+    <div class="border border-gray-200 rounded-4xl py-0.5 px-1">
+      <label for="order_filter" class="mr-2 text-sm font-semibold px-2">
+        Total Order :
+      </label>
+      <select 
+        id="order_filter"
+        name="order_filter"
+        class="rounded text-gray-800"
+        onchange="this.form.submit()"
+      >
+        <option value="alltime" {% if order_filter == 'alltime' %}selected{% endif %}>All-time</option>
+        <option value="monthly" {% if order_filter == 'monthly' %}selected{% endif %}>Monthly</option>
+      </select>
+    </div>
+
+    <!-- Filter 2: Restaurant -->
+    <div class="border border-gray-200 rounded-4xl py-0.5 px-1">
+      <label for="restaurant_id" class="font-medium">
+        Restaurant:
+      </label>
+      <select
+        id="restaurant_id"
+        name="restaurant_id"
+        class="rounded text-gray-800"
+        onchange="this.form.submit()"
+      >
+        {% if restaurants %}
+          {% for resto in restaurants %}
+            <option value="{{ resto.res_id }}"
+              {% if selected_restaurant and selected_restaurant.res_id == resto.res_id %}selected{% endif %}
+            >
+              {{ resto.name }}
+            </option>
+          {% endfor %}
+        {% else %}
+          <option value="">No restaurant registered</option>
+        {% endif %}
+      </select>
+    </div>
+
+    <!-- Additional filters for monthly -->
+    {% if order_filter == 'monthly' %}
+      <div class="border border-gray-200 rounded-4xl py-0.5 px-1">
+        <label for="filter_year" class="mr-2 text-sm font-semibold">Year (Monthly):</label>
+        <select
+          id="filter_year"
+          name="filter_year"
+          class="rounded text-gray-800"
+          onchange="this.form.submit()"
+        >
+          {% for y in years %}
+            <option value="{{ y }}" {% if filter_year == y %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="border border-gray-200 rounded-4xl py-0.5 px-1">
+        <label for="filter_month" class="mr-2 text-sm font-semibold">Month:</label>
+        <select
+          id="filter_month"
+          name="filter_month"
+          class="rounded text-gray-800"
+          onchange="this.form.submit()"
+        >
+          {% for m in months %}
+            <option value="{{ m }}" {% if filter_month == m %}selected{% endif %}>{{ m }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Cards Section -->
+<div class="px-6 py-3 pb-6 grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center">
+  <!-- Card 1: List Restaurant -->
+  <div class="bg-white rounded shadow p-4 w-full">
+    <h3 class="font-bold text-lg mb-2">List Your Restaurant</h3>
+    <ul class="text-sm text-gray-600 mb-2 space-y-1">
+      {% for r in restaurants %}
+        <li>{{ r.name }}</li>
+      {% empty %}
+        <li>No restaurant registered.</li>
+      {% endfor %}
+    </ul>
+    <button class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+            onclick="location.href='/application/manage-branches/'">
+      Add Restaurant +
+    </button>
+  </div>
+
+  <!-- Card 2: Total Order -->
+  <div class="bg-white rounded shadow p-4 w-full">
+    <h3 class="font-bold text-lg mb-2">Total Order</h3>
+    <p class="text-sm text-gray-600">Count: {{ order_count }}</p>
+  </div>
+</div>
+
+<!-- Chart Section -->
+<div class="px-6 pb-6">
+  <div class="bg-white rounded shadow p-4 w-full">
+    <!-- Chart header + chart year filter -->
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-bold text-lg">Monthly Order Chart ({{ chart_year }})</h3>
+      <form method="get" class="inline-flex items-center">
+        <label for="chart_year" class="mr-2 font-medium">Chart Year:</label>
+        <select
+          id="chart_year"
+          name="chart_year"
+          class="p-2 rounded text-gray-800"
+          onchange="this.form.submit()"
+        >
+          {% for y in years %}
+            <option value="{{ y }}" {% if chart_year == y %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+        <input type="hidden" name="order_filter" value="{{ order_filter }}">
+        {% if selected_restaurant %}
+          <input type="hidden" name="restaurant_id" value="{{ selected_restaurant.res_id }}">
+        {% endif %}
+        {% if order_filter == 'monthly' %}
+          <input type="hidden" name="filter_year" value="{{ filter_year|default_if_none:'' }}">
+          <input type="hidden" name="filter_month" value="{{ filter_month|default_if_none:'' }}">
+        {% elif order_filter == 'weekly' %}
+          <input type="hidden" name="filter_month" value="{{ filter_month|default_if_none:'' }}">
+        {% endif %}
+      </form>
+    </div>
+
+    <canvas id="orderLineChart"></canvas>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  
+  // Parse chart data from the context (JSON)
+  const chartData = JSON.parse('{{ chart_data|escapejs }}');
+  const ctx = document.getElementById('orderLineChart').getContext('2d');
+
+  const orderLineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets: [{
+        label: 'Total Orders',
+        data: chartData,
+        fill: false,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        tension: 0.1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          precision: 0
+        }
+      }
+    }
+  });
+</script>
+{% endblock content %}
