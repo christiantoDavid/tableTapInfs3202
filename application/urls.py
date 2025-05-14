@@ -11,8 +11,6 @@ from .views import (
     remove_staff_ajax_view,
     delete_invitation_ajax_view,
     notification_list_view,
-
-
     manage_menu_items_view,
     delete_menu_item_view,
     create_category_ajax,
@@ -30,8 +28,6 @@ from .views import (
     cancel_cart_view,
     make_order_view,
     add_to_cart_view,
-
-
     delete_order_ajax,
     delete_order_item_ajax,
     set_item_status_ajax,
@@ -39,8 +35,6 @@ from .views import (
     set_up_profile_view,
     update_profile_view,
     update_profile_photo_view,
-
-
     )
 
 urlpatterns = [

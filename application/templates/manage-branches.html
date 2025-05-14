@@ -95,7 +95,7 @@ Manage Branches - TableTap
 
           <!-- action buttons-->
           <div class="mt-auto flex justify-end space-x-2 pt-4">
-            <!-- Show 3 buttons only if user is the OWNER (account is the same as br.restaurant.user) -->
+            <!-- Show 3 buttons only if user is the owner (account is the same as br.restaurant.user) -->
             {% if br.restaurant.user.user_id == account.user_id %}
               <button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
                       onclick="deleteBranch({{ br.branch_id }})">

@@ -112,7 +112,6 @@
 <body class="text-gray-800">
   <!-- top bar -->
   <header class="px-6 py-4">
-    <!-- Back button + Title -->
     <div class="flex items-center space-x-4">
       <button
         onclick="goBackToMenu()"
@@ -157,7 +156,7 @@
 
   <!-- main content -->
   <main class="cart-container p-4">
-    <!-- LEFT SECTION: items -->
+    <!-- items -->
     <section class="left-card">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold mb-1">
@@ -306,10 +305,10 @@
   </footer>
 
   <script>
-    // 1) goBackToMenu => read table_id from template => /application/menu/<table_id>/
+    // read table_id from template => /application/menu/<table_id>/
     function goBackToMenu() {
       const tid = "{{ table_id|default:'0' }}";
-      location.href = "/application/menu/" + tid + "/";
+      location.href = "/tabletap/application/menu/" + tid + "/";
     }
 
     // 2) Cancel entire cart

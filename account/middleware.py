@@ -5,28 +5,21 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 class AuthRequiredMiddleware:
-    """
-    Middleware to ensure the user is logged in for protected pages.
-    Only the URLs explicitly allowed in the whitelist are accessible without login.
-    """
     def __init__(self, get_response):
         self.get_response = get_response
-        # Whitelist URLs that do not require login, both with and without trailing slash
         self.whitelist = [
-            '/',                    # home
+            '/',
             '/login.html',
             '/register.html',
-            # help & faq (with and without trailing slash)
             '/account/help/',
             '/application/faq',
-            # allow anything under /account/ (e.g. oauth callbacks, logout)
             '/account/',
         ]
 
     def __call__(self, request):
         path = request.path
 
-        # if the request path is in whitelist (exact match) or starts with one:
+        # if the request path is in whitelist
         if not any(path == p or path.startswith(p) for p in self.whitelist):
             token = request.session.get('jwt_token')
             try:
@@ -35,7 +28,7 @@ class AuthRequiredMiddleware:
             except jwt.ExpiredSignatureError:
                 messages.error(request, "Your session has expired.")
                 return redirect('/')
-            except Exception:  # covers DecodeError and None token
+            except Exception:
                 messages.error(request, "You must be logged in.")
                 return redirect('/')
 

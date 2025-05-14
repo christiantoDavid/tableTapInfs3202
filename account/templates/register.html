@@ -15,8 +15,8 @@
   <nav class="w-full flex items-center justify-between px-6 py-4 bg-white shadow">
     <div class="text-xl font-bold">Table Tap</div>
     <div class="space-x-6">
-      <a href="/account/help/" class="text-gray-600 hover:text-gray-900">Help</a>
-      <a href="/account/faq/" class="text-gray-600 hover:text-gray-900">FAQ</a>
+      <a href="/tabletap/account/help/" class="text-gray-600 hover:text-gray-900">Help</a>
+      <a href="/tabletap/account/faq/" class="text-gray-600 hover:text-gray-900">FAQ</a>
     </div>
   </nav>
 
@@ -48,7 +48,7 @@
         <h2 class="text-2xl font-bold mb-4 text-center">Table Tap</h2>
 
         <!-- Form -->
-        <form action="/account/register/" method="POST" class="space-y-4">
+        <form action="{% url 'account:register' %}" method="POST" class="space-y-4">
           {% csrf_token %}
           <div>
             <label for="username" class="block mb-1">Username</label>
@@ -132,7 +132,7 @@
           <button 
             type="button" 
             class="flex items-center justify-center w-full sm:w-1/2 border border-gray-300 rounded py-2 hover:bg-gray-100 transition"
-            onclick="location.href='/account/login/google/'"
+            onclick="location.href='/tabletap/account/login/google/'"
           >
             <img 
               src="https://www.svgrepo.com/show/475656/google-color.svg" 
@@ -145,7 +145,7 @@
           <button 
             type="button" 
             class="flex items-center justify-center w-full sm:w-1/2 border border-gray-300 rounded py-2 hover:bg-gray-100 transition"
-            onclick="location.href='/account/login/github/'"
+            onclick="location.href='/tabletap/account/login/github/'"
           >
             <img 
               src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
@@ -159,7 +159,7 @@
         <!-- Already have an account -->
         <p class="text-center mt-6 text-sm">
           Already have an account? 
-          <a href="/account/login/" class="text-[#4C8DFF] hover:underline">Sign In here</a>.
+          <a href="{% url 'login_html' %}" class="text-[#4C8DFF] hover:underline">Sign In here</a>.
         </p>
       </div>
     </div>

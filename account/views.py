@@ -12,13 +12,9 @@ from django.utils.crypto import get_random_string
 from .models import Account
 
 ########################################
-# Helper: Generate JWT
+# Generate JWT
 ########################################
 def generate_jwt_token(account):
-    """
-    Generates a JWT token for the given account.
-    Expires in 1 day.
-    """
     payload = {
         'user_id': account.user_id,
         'exp': datetime.utcnow() + timedelta(days=1),
@@ -39,15 +35,15 @@ def register_view(request):
         # Basic checks
         if not username or not email or not password:
             messages.error(request, "All fields are required.")
-            return redirect('/register.html')
+            return redirect('/tabletap/register.html')
 
         # Check duplicates
         if Account.objects.filter(email=email).exists():
             messages.error(request, "Account creation failed: Email already used.")
-            return redirect('/register.html')
+            return redirect('/tabletap/register.html')
         if Account.objects.filter(username=username).exists():
             messages.error(request, "Account creation failed: Username already used.")
-            return redirect('/register.html')
+            return redirect('/tabletap/register.html')
 
         # Create user
         hashed_pw = make_password(password)
@@ -55,10 +51,9 @@ def register_view(request):
         account.save()
 
         messages.success(request, "Account created successfully! Please log in.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
     else:
-        # If someone tries GET /account/register/ => redirect or show error
-        return redirect('/register.html')
+        return redirect('/tabletap/register.html')
 
 ########################################
 # Login View (POST /account/login/)
@@ -70,30 +65,28 @@ def login_view(request):
 
         if not email or not password:
             messages.error(request, "Please provide email and password.")
-            return redirect('/login.html')
+            return redirect('/tabletap/login.html')
 
         try:
             account = Account.objects.get(email=email)
         except Account.DoesNotExist:
             messages.error(request, "Invalid credentials (user not found).")
-            return redirect('/login.html')
+            return redirect('/tabletap/login.html')
 
         if check_password(password, account.password):
             token = generate_jwt_token(account)
             request.session['jwt_token'] = token
-            # messages.success(request, "Login successful!")
-            return redirect('/dashboard.html')
+            return redirect('/tabletap/dashboard.html')
         else:
             messages.error(request, "Invalid credentials (wrong password).")
-            return redirect('/login.html')
+            return redirect('/tabletap/login.html')
     else:
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
 ########################################
 # Google OAuth Start (GET /account/login/google/)
 ########################################
 def google_login_start(request):
-    # Real Google OAuth flow
     state = get_random_string(16)
     request.session['google_oauth_state'] = state
 
@@ -115,7 +108,7 @@ def google_login_start(request):
     return redirect(url)
 
 ########################################
-# Google OAuth Callback (/account/login/google/callback/)
+# Google OAuth Callback
 ########################################
 def google_login_callback(request):
     code = request.GET.get('code')
@@ -123,11 +116,11 @@ def google_login_callback(request):
 
     if not code or not state:
         messages.error(request, "Invalid response from Google.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     if state != request.session.get('google_oauth_state'):
         messages.error(request, "State mismatch for Google OAuth.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     # Exchange code for access token
     token_url = "https://oauth2.googleapis.com/token"
@@ -144,13 +137,13 @@ def google_login_callback(request):
     r = requests.post(token_url, data=data)
     if r.status_code != 200:
         messages.error(request, "Failed to exchange code for token.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     token_data = r.json()
     access_token = token_data.get('access_token')
     if not access_token:
         messages.error(request, "No access token found in token response.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     # Fetch user info
     userinfo_url = "https://www.googleapis.com/oauth2/v3/userinfo"
@@ -158,7 +151,7 @@ def google_login_callback(request):
     r2 = requests.get(userinfo_url, headers=headers)
     if r2.status_code != 200:
         messages.error(request, "Failed to fetch user info from Google.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     userinfo = r2.json()
     google_email = userinfo.get('email')
@@ -166,7 +159,7 @@ def google_login_callback(request):
 
     if not google_email:
         messages.error(request, "Google did not return an email.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     # Create or get user
     account, created = Account.objects.get_or_create(
@@ -181,10 +174,10 @@ def google_login_callback(request):
     token = generate_jwt_token(account)
     request.session['jwt_token'] = token
     messages.success(request, "Logged in via Google!")
-    return redirect('/dashboard.html')
+    return redirect('/tabletap/dashboard.html')
 
 ########################################
-# GitHub OAuth Start (GET /account/login/github/)
+# GitHub OAuth Start
 ########################################
 def github_login_start(request):
     state = get_random_string(16)
@@ -213,11 +206,11 @@ def github_login_callback(request):
 
     if not code or not state:
         messages.error(request, "Invalid response from GitHub.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     if state != request.session.get('github_oauth_state'):
         messages.error(request, "State mismatch for GitHub OAuth.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     token_url = "https://github.com/login/oauth/access_token"
     redirect_uri = request.build_absolute_uri(reverse('account:github_callback'))
@@ -234,13 +227,13 @@ def github_login_callback(request):
     r = requests.post(token_url, data=data, headers=headers)
     if r.status_code != 200:
         messages.error(request, "Failed to exchange code for token (GitHub).")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     token_data = r.json()
     access_token = token_data.get('access_token')
     if not access_token:
         messages.error(request, "No access token found in GitHub response.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     # Fetch user info from GitHub
     userinfo_url = "https://api.github.com/user"
@@ -248,7 +241,7 @@ def github_login_callback(request):
     r2 = requests.get(userinfo_url, headers=headers)
     if r2.status_code != 200:
         messages.error(request, "Failed to fetch user info from GitHub.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     userinfo = r2.json()
     github_email = userinfo.get('email')
@@ -267,7 +260,7 @@ def github_login_callback(request):
 
     if not github_email:
         messages.error(request, "Could not find an email from GitHub.")
-        return redirect('/login.html')
+        return redirect('/tabletap/login.html')
 
     # Create or get user
     account, created = Account.objects.get_or_create(
@@ -281,19 +274,12 @@ def github_login_callback(request):
     token = generate_jwt_token(account)
     request.session['jwt_token'] = token
     messages.success(request, "Logged in via GitHub!")
-    return redirect('/dashboard.html')
+    return redirect('/tabletap/dashboard.html')
 
 
 ########################################
 # Logout View
 ########################################
 def logout_view(request):
-    """
-    Clears the JWT from the session, logging the user out.
-    Redirects back to the login page.
-    """
-    # Remove token from session if present
     request.session.pop('jwt_token', None)
-    # messages.success(request, "You have been logged out.")
-    # Redirect to your login page (static .html)
-    return redirect('/')
+    return redirect('/tabletap/')

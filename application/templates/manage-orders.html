@@ -41,7 +41,7 @@ Order Management - TableTap
 {% if not ajax_mode %}
 
 
-<!-- Top Bar-->
+<!-- top Bar-->
 <div class="flex items-center justify-between px-6 py-4.5 bg-white shadow mb-1">
   <button class="md:hidden p-2 text-gray-600 hover:text-gray-900" onclick="toggleSidebar()">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
@@ -69,11 +69,11 @@ Order Management - TableTap
   </div>
 </div>
 
-<!-- Filters Row -->
+<!-- filters Row -->
 <div class="p-4">
   <div class="overflow-x-auto">
     <div class="filters-row items-center space-x-4">
-      <!-- Restaurant Filter -->
+      <!-- restaurant Filter -->
       <div class="flex items-center space-x-2">
         <label for="restaurantSelect" class="font-medium">Restaurant:</label>
         <select
@@ -98,7 +98,7 @@ Order Management - TableTap
         </select>
       </div>
 
-      <!-- Date Filter -->
+      <!-- date Filter -->
       <div class="flex items-center space-x-2">
         <label for="orderDate" class="font-medium">Date:</label>
         <input
@@ -114,9 +114,9 @@ Order Management - TableTap
   </div>
 </div>
 
-<!-- Content row: left optional image, right orders container -->
+<!-- content row -->
 <div class="p-4 flex space-x-4">
-  <!-- Left column (optional) -->
+  <!-- logo -->
   <div class="hidden md:block w-1/3">
     <img 
       src="{% static 'logo1.png' %}"
@@ -125,14 +125,14 @@ Order Management - TableTap
     />
   </div>
 
-  <!-- Right column: orders container -->
+  <!-- orders container -->
   <div class="w-full md:w-2/3 space-y-4" id="ordersContainer">
 {% endif %}
   {# If ajax_mode=True => only this block is rendered #}
 
   {% for order in orders %}
     <div class="relative bg-white rounded shadow p-4 mb-4" id="order-card-{{ order.order_id }}">
-      <!-- Delete entire order -->
+      <!-- delete entire order -->
       <button
         class="absolute top-2 right-2 text-gray-500 hover:text-red-500"
         title="Delete this entire order?"
@@ -154,7 +154,7 @@ Order Management - TableTap
         {% endif %}
       </h3>
 
-      <!-- Order notes -->
+      <!-- order notes -->
       <p class="text-sm text-gray-700 mb-2">
         <strong>Notes:</strong>
         {% if order.notes %}
@@ -164,7 +164,7 @@ Order Management - TableTap
         {% endif %}
       </p>
 
-      <!-- Buttons to set all items' status in this order -->
+      <!-- buttons to set all items' status in this order -->
       <div class="flex items-center space-x-2 mb-2">
         <button
           class="text-blue-600 hover:underline"
@@ -189,7 +189,7 @@ Order Management - TableTap
         </button>
       </div>
 
-      <!-- Items table -->
+      <!-- items table -->
       <div class="overflow-x-auto">
         <table class="w-full text-sm text-gray-600">
           <thead>
@@ -247,8 +247,8 @@ Order Management - TableTap
   {% endfor %}
 
 {% if not ajax_mode %}
-  </div> <!-- end #ordersContainer -->
-</div> <!-- end .p-4.flex.space-x-4 -->
+  </div>
+</div>
 
 <script>
   function onRestaurantChange() {
@@ -271,7 +271,7 @@ Order Management - TableTap
     onRestaurantChange();
   }
 
-  // Polling every 10 seconds => ?ajax=1
+  // polling every 10 seconds => ?ajax=1
   setInterval(function() {
     const restaurantSelect = document.getElementById('restaurantSelect');
     const dateInput = document.getElementById('orderDate');
@@ -297,7 +297,7 @@ Order Management - TableTap
   // AJAX actions
   function deleteOrderAjax(orderId) {
     if (!confirm('Are you sure you want to delete this entire order?')) return;
-    fetch(`/application/manage_orders/ajax/delete_order/${orderId}/`, {
+    fetch(`/tabletap/application/manage_orders/ajax/delete_order/${orderId}/`, {
       method: 'POST',
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
@@ -318,7 +318,7 @@ Order Management - TableTap
 
   function deleteOrderItemAjax(orderItemId) {
     if (!confirm('Are you sure you want to delete this item?')) return;
-    fetch(`/application/manage_orders/ajax/delete_item/${orderItemId}/`, {
+    fetch(`/tabletap/application/manage_orders/ajax/delete_item/${orderItemId}/`, {
       method: 'POST',
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
@@ -338,7 +338,7 @@ Order Management - TableTap
   }
 
   function setItemStatusAjax(orderItemId, newStatus) {
-    fetch(`/application/manage_orders/ajax/set_item_status/${orderItemId}/`, {
+    fetch(`/tabletap/application/manage_orders/ajax/set_item_status/${orderItemId}/`, {
       method: 'POST',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -363,7 +363,7 @@ Order Management - TableTap
 
   function setAllItemsStatusAjax(orderId, newStatus) {
     if (!confirm(`Are you sure you want to set ALL items in Order ${orderId} to '${newStatus}'?`)) return;
-    fetch(`/application/manage_orders/ajax/set_all_items_status/${orderId}/`, {
+    fetch(`/tabletap/application/manage_orders/ajax/set_all_items_status/${orderId}/`, {
       method: 'POST',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',

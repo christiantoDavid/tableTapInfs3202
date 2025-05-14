@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="{% static 'output.css' %}" />
 
   <style>
-    /* Horizontal scrollable categories row */
     .categories-row {
       display: inline-flex;
       white-space: nowrap;
@@ -39,7 +38,6 @@
       border-color: #2563eb;
     }
 
-    /* Style for item cards */
     .menu-item-card {
       display: flex;
       flex-direction: column;
@@ -61,25 +59,24 @@
 </head>
 
 <body class="bg-white text-gray-800 flex flex-col min-h-screen">
-  <!-- HEADER -->
+  <!-- top bar -->
   <header class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-    <!-- Left side: Restaurant + Table info -->
     <div>
       <h1 class="text-3xl font-bold">{{ restaurant_name }} Menu</h1>
       <p class="text-sm text-gray-500">By Table Tap</p>
       <p class="text-sm text-gray-500">Table {{ table_number }}</p>
     </div>
 
-    <!-- Right side: Cart Link -->
+    <!-- cart -->
     <a 
       href="{% url 'cart_page' %}" 
       class="flex items-center space-x-1 text-gray-800 hover:text-gray-900"
     >
-      <!-- Cart Count from session cart -->
+      <!-- number item user add into cart -->
       <span id="cartCount" class="text-xl font-bold">
         {{ cart_count|default:0 }}
       </span>
-      <!-- Cart Icon -->
+      <!-- cart icon -->
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
         class="h-6 w-6 text-gray-600" 
@@ -100,9 +97,9 @@
     </a>
   </header>
 
-  <!-- MAIN CONTENT -->
+  <!-- main content -->
   <main class="flex-1 max-w-6xl mx-auto p-6 w-full">
-    <!-- Category Row -->
+    <!-- category Row -->
     <section class="mb-6">
       <h2 class="text-lg font-bold mb-2">Menu Categories:</h2>
       <div class="overflow-x-auto">
@@ -126,7 +123,7 @@
       </div>
     </section>
 
-    <!-- Menu Grid -->
+    <!-- menu grid -->
     <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {% for item in menu_items %}
         <div class="menu-item-card">
@@ -142,7 +139,6 @@
             {{ item.description|default:"No description provided." }}
           </p>
 
-          <!-- Quantity row (localStorage) -->
           <div class="flex items-center justify-center space-x-3 mb-3">
             <button 
               class="px-3 py-1 bg-gray-200 rounded"
@@ -183,9 +179,7 @@
   </footer>
 
   <script>
-    /**
-     * 1) Category filter => reload with ?cat_id=...
-     */
+    // category filter
     function goCategory(catId) {
       let url = '?';
       if (catId) {
@@ -193,11 +187,6 @@
       }
       window.location.href = url;
     }
-
-    /**
-     * 2) We'll store each card's quantity in localStorage so it won't reset on page reload.
-     *    Key: "qty-<menu_id>" => integer quantity
-     */
 
     // On page load, read localStorage for each item and set the displayed quantity
     document.addEventListener('DOMContentLoaded', function() {
@@ -230,11 +219,6 @@
       document.getElementById('qty-' + menuId).textContent = current;
     }
 
-    /**
-     * 3) addToCart(menuId): read the quantity from localStorage, call ?qty=...
-     *    Then reset only THIS card's localStorage to 0, so it won't keep the old quantity.
-     *    Other cards remain untouched.
-     */
     function addToCart(menuId) {
       const key = 'qty-' + menuId;
       let qty = parseInt(localStorage.getItem(key) || '0', 10);
@@ -242,10 +226,10 @@
         alert('Please select a quantity > 0');
         return;
       }
-      // Step A: set this card's quantity to 0 in localStorage (independent from other cards)
+      // set this card's quantity to 0 in localStorage
       localStorage.setItem(key, 0);
 
-      // Step B: redirect to /menu/add/<menu_id>/?qty=...
+      // redirect to /menu/add/<menu_id>/?qty=...
       window.location.href = "{% url 'add_to_cart' 0 %}".replace('0', menuId) + "?qty=" + qty;
     }
   </script>

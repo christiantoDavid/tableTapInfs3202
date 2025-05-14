@@ -16,10 +16,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-GOOGLE_CLIENT_ID = '33693090743-3tttrm6kh1kgsicl9bcqs0jqn3ngvvju.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = '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'
-GITHUB_CLIENT_ID = "Ov23liPg7nXbCFKGTweK"
-GITHUB_CLIENT_SECRET = "afad304e8525d13ce6c55678a29ac2b8a54ff53d"
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GITHUB_CLIENT_ID = os.getenv('GITHUB_CLIENT_ID')
+GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-dtw(sq33@r_tk(zh%g^oh0@dz-e9)ctc8h!a8)bym3+8cxx+*5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['infs3202-40dceb5f.uqcloud.net']
 
 
 # Application definition
@@ -96,9 +96,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        # 'PASSWORD': os.getenv('DB_PASSWORD'),
+        # 'HOST': os.getenv('DB_HOST'),
+        # 'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -137,17 +137,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/tabletap/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'src',  # if you keep output.css
+    BASE_DIR / 'src',
     BASE_DIR / 'static',
 ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/tabletap/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://infs3202-40dceb5f.uqcloud.net',
+]
 
